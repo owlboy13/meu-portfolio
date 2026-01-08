@@ -1,0 +1,17 @@
+portfolio-andersonluiz/
+│
+├── index.html              # Página principal
+├── style.css               # Estilos principais
+├── script.js               # Interatividade e Easter Eggs
+├── README.md               # Documentação do portfólio
+├── assets/                 # Pasta para imagens/ícones
+│   ├── owl-icon.svg        # Ícone da coruja
+│   └── profile-pic.jpg     # Sua foto (opcional)
+│
+├── projetos/               # Páginas detalhadas dos projetos (opcional)
+│   ├── nutrofit.html
+│   ├── dashboard-educacional.html
+│   └── web-scraping.html
+│
+└── .github/workflows/      # Configuração para deploy automático (opcional)
+    └── deploy.yml
