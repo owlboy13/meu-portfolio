@@ -1,9 +1,4 @@
 🌙 Portfolio Anderson Luiz - Desenvolvimento & Automação
-<div align="center">
-https://img.shields.io/badge/GitHub%2520Pages-Deploy%2520Ready-success?style=for-the-badge&logo=github
-https://img.shields.io/badge/Vercel-Ready-blue?style=for-the-badge&logo=vercel
-https://img.shields.io/badge/License-MIT-green?style=for-the-badge
-https://img.shields.io/badge/Status-Production%2520Ready-brightgreen?style=for-the-badge
 
 Portfólio profissional minimalista com tema escuro estilo GitHub
 
