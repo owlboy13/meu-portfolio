@@ -166,17 +166,15 @@ function initEasterEggs() {
     });
     
     // 5. Easter Egg escondido no console
-    console.log(
-        `%c
-         ___   
-        (o,o)  
-        {`"`"}  
-        -"-"-
-        🦉 OwlOS v1.0 - Sistema de Desenvolvimento Noturno
-        `,
-        'color: #2ea043; font-family: monospace;'
-    );
-}
+    const owlArt = [
+        '         ___   ',
+        '        (o,o)  ',
+        '        {"}"}  ',
+        '        -"-"-  ',
+        '🦉 OwlOS v1.0 - Sistema de Desenvolvimento Noturno'
+    ].join('\n');
+
+    console.log('%c' + owlArt, 'color: #2ea043; font-family: monospace;');
 
 function showOwlMessage(message) {
     // Criar notificação estilo toast
