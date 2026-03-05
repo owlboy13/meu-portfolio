@@ -9,7 +9,6 @@ Portfólio profissional com tema dark retro-futurista, jogo de nave integrado e 
 ## ✨ O que tem nele
 
 - **Dark retro-futurista** — estética terminal/hacker com scanlines, grid de fundo e glow effects
-- **Arquivo único** — tudo em `index.html` (HTML + CSS + JS inline), sem dependências locais
 - **Jogo de nave 🚀** — Space Shooter jogável direto no portfólio (botão "jogar" no nav)
 - **Typed effect** — roles que rotacionam automaticamente no hero
 - **Skill bars animadas** — animam ao entrar na viewport via IntersectionObserver
