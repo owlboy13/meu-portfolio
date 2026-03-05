@@ -123,29 +123,85 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.cl
 
 class SpaceGame {
   constructor() {
-    this.W = canvas.width; this.H = canvas.height;
+    // Redimensiona o canvas para caber em mobile
+    const maxW = Math.min(600, window.innerWidth - 32);
+    this.scale = maxW / 600;
+    canvas.width = 600; canvas.height = 440;
+    canvas.style.width = maxW + 'px';
+    canvas.style.height = Math.round(440 * this.scale) + 'px';
+
+    this.W = 600; this.H = 440;
     this.score = 0; this.lives = 3; this.wave = 1; this.paused = false; this.over = false;
     this.player = { x: this.W/2, y: this.H - 50, w: 30, h: 20, speed: 5 };
     this.bullets = []; this.enemies = []; this.particles = []; this.stars = [];
     this.keys = {};
+    this.touch = { left: false, right: false, fire: false };
     this.shootCooldown = 0;
     this.msgEl = document.getElementById('game-msg');
+    this.intro = true;
 
-    // Stars
+    // Estrelas
     for (let i = 0; i < 80; i++) this.stars.push({
       x: Math.random()*this.W, y: Math.random()*this.H,
       r: Math.random()*1.5+.3, speed: Math.random()*.8+.2, opacity: Math.random()*.6+.2
     });
 
     this.spawnWave();
-    this.keyDown = e => { this.keys[e.code] = true; if (e.code==='KeyP') this.paused=!this.paused; e.preventDefault&&/Space|Arrow/.test(e.code)&&e.preventDefault(); };
+
+    // Teclado
+    this.keyDown = e => {
+      this.keys[e.code] = true;
+      if (e.code === 'KeyP') this.paused = !this.paused;
+      if (/Space|Arrow/.test(e.code)) e.preventDefault();
+    };
     this.keyUp = e => { this.keys[e.code] = false; };
     document.addEventListener('keydown', this.keyDown);
     document.addEventListener('keyup', this.keyUp);
+
+    // Botões touch (◀ 🚀 ▶)
+    this._bindTouch('btn-left',  () => this.touch.left  = true,  () => this.touch.left  = false);
+    this._bindTouch('btn-right', () => this.touch.right = true,  () => this.touch.right = false);
+    this._bindTouch('btn-fire',  () => this.touch.fire  = true,  () => this.touch.fire  = false);
+
+    // Swipe direto no canvas (metade esq = esquerda, metade dir = direita)
+    this._canvasTouch = e => {
+      e.preventDefault();
+      if (!e.touches.length) return;
+      const rect = canvas.getBoundingClientRect();
+      const tx = (e.touches[0].clientX - rect.left) / this.scale;
+      if (tx < this.W / 2) { this.touch.left = true;  this.touch.right = false; }
+      else                  { this.touch.right = true; this.touch.left  = false; }
+    };
+    this._canvasTouchEnd = () => { this.touch.left = false; this.touch.right = false; };
+    canvas.addEventListener('touchstart', this._canvasTouch, { passive: false });
+    canvas.addEventListener('touchmove',  this._canvasTouch, { passive: false });
+    canvas.addEventListener('touchend',   this._canvasTouchEnd);
+
     this.raf = requestAnimationFrame(() => this.loop());
   }
 
-  destroy() { document.removeEventListener('keydown', this.keyDown); document.removeEventListener('keyup', this.keyUp); cancelAnimationFrame(this.raf); }
+  // Helper: bind touchstart/end + fallback mouse nos botões virtuais
+  _bindTouch(id, onStart, onEnd) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const start = e => { e.preventDefault(); onStart(); el.classList.add('pressed'); };
+    const end   = e => { e.preventDefault(); onEnd();   el.classList.remove('pressed'); };
+    el.addEventListener('touchstart',  start, { passive: false });
+    el.addEventListener('touchend',    end,   { passive: false });
+    el.addEventListener('touchcancel', end,   { passive: false });
+    el.addEventListener('mousedown',   start);
+    el.addEventListener('mouseup',     end);
+    el.addEventListener('mouseleave',  end);
+  }
+
+  destroy() {
+    document.removeEventListener('keydown', this.keyDown);
+    document.removeEventListener('keyup',   this.keyUp);
+    canvas.removeEventListener('touchstart', this._canvasTouch);
+    canvas.removeEventListener('touchmove',  this._canvasTouch);
+    canvas.removeEventListener('touchend',   this._canvasTouchEnd);
+    cancelAnimationFrame(this.raf);
+  }
 
   spawnWave() {
     this.enemies = [];
@@ -168,24 +224,35 @@ class SpaceGame {
 
   update() {
     this.shootCooldown = Math.max(0, this.shootCooldown - 1);
-    // Player
     const p = this.player;
-    if ((this.keys['ArrowLeft']||this.keys['KeyA']) && p.x > p.w/2) p.x -= p.speed;
-    if ((this.keys['ArrowRight']||this.keys['KeyD']) && p.x < this.W - p.w/2) p.x += p.speed;
-    if ((this.keys['Space']||this.keys['ArrowUp']) && this.shootCooldown === 0) {
+
+    // Aguardando espaço para sair da intro
+    if (this.intro) {
+      if (this.keys['Space'] || this.touch.fire) {
+        this.intro = false;
+        this.shootCooldown = 30; // evita atirar imediatamente ao sair da intro
+      }
+      return;
+    }
+
+    // Movimento — teclado OU touch
+    if ((this.keys['ArrowLeft']  || this.keys['KeyA'] || this.touch.left)  && p.x > p.w/2)          p.x -= p.speed;
+    if ((this.keys['ArrowRight'] || this.keys['KeyD'] || this.touch.right) && p.x < this.W - p.w/2) p.x += p.speed;
+
+    // Tiro — mantém atirando enquanto o botão estiver pressionado
+    if ((this.keys['Space'] || this.keys['ArrowUp'] || this.touch.fire) && this.shootCooldown === 0) {
       this.bullets.push({ x: p.x, y: p.y - p.h/2, w: 3, h: 10, speed: 9 });
       this.shootCooldown = 14;
     }
-    // Player bullets
+
     this.bullets = this.bullets.filter(b => b.y > -10);
     this.bullets.forEach(b => b.y -= b.speed);
-    // Stars
     this.stars.forEach(s => { s.y += s.speed; if (s.y > this.H) s.y = 0; });
-    // Enemies movement
+
     let hitEdge = false;
     this.enemies.forEach(e => { e.x += e.speed * e.dir; if (e.x > this.W-20 || e.x < 10) hitEdge = true; });
     if (hitEdge) { this.enemies.forEach(e => { e.dir *= -1; e.y += 16; }); }
-    // Enemy bullets
+
     this.enemyShootTimer++;
     const interval = Math.max(30, 90 - this.wave*8);
     if (this.enemyShootTimer >= interval && this.enemies.length) {
@@ -195,7 +262,7 @@ class SpaceGame {
     }
     this.enemyBullets = this.enemyBullets.filter(b => b.y < this.H+10);
     this.enemyBullets.forEach(b => b.y += b.speed);
-    // Collisions: player bullets vs enemies
+
     this.bullets.forEach(b => {
       this.enemies.forEach(e => {
         if (!e.dead && b.x > e.x && b.x < e.x+e.w && b.y > e.y && b.y < e.y+e.h) {
@@ -205,7 +272,7 @@ class SpaceGame {
       });
     });
     this.enemies = this.enemies.filter(e => !e.dead);
-    // Enemy bullets vs player
+
     this.enemyBullets.forEach(b => {
       if (b.x > p.x-p.w/2 && b.x < p.x+p.w/2 && b.y > p.y-p.h/2 && b.y < p.y+p.h/2) {
         b.y = 9999; this.lives--;
@@ -213,14 +280,13 @@ class SpaceGame {
         if (this.lives <= 0) this.gameOver();
       }
     });
-    // Enemies reach bottom
+
     this.enemies.forEach(e => { if (e.y + e.h > this.H - 40) { this.lives = 0; this.gameOver(); } });
-    // Particles
     this.particles = this.particles.filter(p => p.life > 0);
     this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.life--; p.vy += .08; });
-    // Next wave
+
     if (this.enemies.length === 0) { this.wave++; this.spawnWave(); showToast(`🚀 Fase ${this.wave}! Cada vez mais difícil...`); }
-    // Update HUD
+
     document.getElementById('score-display').textContent = this.score;
     document.getElementById('lives-display').textContent = this.lives;
     document.getElementById('wave-display').textContent = this.wave;
@@ -235,65 +301,81 @@ class SpaceGame {
 
   gameOver() {
     this.over = true;
-    this.msgEl.innerHTML = `<span style="color:var(--red)">GAME OVER</span> — score: <span style="color:var(--green)">${this.score}</span> &nbsp; <button onclick="if(window._game)window._game.restart()" style="font-family:var(--mono);font-size:.75rem;background:transparent;border:1px solid var(--green);color:var(--green);padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px" onclick="startGame()">[ reiniciar ]</button>`;
-    document.getElementById('close-game-btn').textContent = '[ ESC ] fechar';
+    this.msgEl.innerHTML = `<span style="color:var(--red)">GAME OVER</span> — score: <span style="color:var(--green)">${this.score}</span> &nbsp; <button onclick="startGame()" style="font-family:var(--mono);font-size:.75rem;background:transparent;border:1px solid var(--green);color:var(--green);padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px">[ reiniciar ]</button>`;
   }
 
   restart() { if (game) game.destroy(); game = new SpaceGame(); }
 
   draw() {
     ctx.fillStyle = '#060a0f'; ctx.fillRect(0,0,this.W,this.H);
-    // Grid
     ctx.strokeStyle = 'rgba(0,255,136,0.03)'; ctx.lineWidth = 1;
     for (let x = 0; x < this.W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,this.H); ctx.stroke(); }
     for (let y = 0; y < this.H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(this.W,y); ctx.stroke(); }
-    // Stars
+
     this.stars.forEach(s => { ctx.fillStyle=`rgba(255,255,255,${s.opacity})`; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill(); });
-    // Ground line
+
     ctx.strokeStyle = 'rgba(0,255,136,0.15)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(0,this.H-30); ctx.lineTo(this.W,this.H-30); ctx.stroke();
-    // Particles
+
     this.particles.forEach(p => { ctx.globalAlpha = p.life/50; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); });
     ctx.globalAlpha = 1;
-    // Player bullets
+
     ctx.fillStyle = '#00ff88'; ctx.shadowColor = '#00ff88'; ctx.shadowBlur = 8;
     this.bullets.forEach(b => { ctx.fillRect(b.x-b.w/2, b.y, b.w, b.h); });
-    // Enemy bullets
     ctx.fillStyle = '#ff4444'; ctx.shadowColor = '#ff4444';
     this.enemyBullets.forEach(b => { ctx.fillRect(b.x-b.w/2, b.y, b.w, b.h); });
     ctx.shadowBlur = 0;
-    // Enemies
+
     this.enemies.forEach(e => {
       const colors = ['#00ff88','#00aaff','#ffaa00'];
-      const glows = ['#00ff88','#00aaff','#ffaa00'];
-      ctx.fillStyle = colors[e.tier]; ctx.shadowColor = glows[e.tier]; ctx.shadowBlur = 6;
-      // Body
+      ctx.fillStyle = colors[e.tier]; ctx.shadowColor = colors[e.tier]; ctx.shadowBlur = 6;
       ctx.fillRect(e.x+4, e.y+4, e.w-8, e.h-6);
-      // Wings
       ctx.fillRect(e.x, e.y+8, 6, e.h-12); ctx.fillRect(e.x+e.w-6, e.y+8, 6, e.h-12);
-      // Eyes
       ctx.fillStyle='#000'; ctx.fillRect(e.x+7,e.y+6,3,3); ctx.fillRect(e.x+e.w-10,e.y+6,3,3);
       ctx.shadowBlur = 0;
     });
-    // Player ship
+
     const p = this.player;
-    ctx.shadowColor = '#00ff88'; ctx.shadowBlur = 12;
-    ctx.fillStyle = '#00ff88';
-    // Body
+    ctx.shadowColor = '#00ff88'; ctx.shadowBlur = 12; ctx.fillStyle = '#00ff88';
     ctx.beginPath(); ctx.moveTo(p.x,p.y-p.h/2); ctx.lineTo(p.x+p.w/2,p.y+p.h/2); ctx.lineTo(p.x-p.w/2,p.y+p.h/2); ctx.closePath(); ctx.fill();
-    // Wings
     ctx.fillRect(p.x-p.w/2-8, p.y+2, 10, 6); ctx.fillRect(p.x+p.w/2-2, p.y+2, 10, 6);
-    // Engine glow
     ctx.fillStyle = '#ffaa00'; ctx.shadowColor = '#ffaa00';
     ctx.fillRect(p.x-4, p.y+p.h/2, 8, 4);
     ctx.shadowBlur = 0;
-    // Paused overlay
+
     if (this.paused && !this.over) {
       ctx.fillStyle = 'rgba(6,10,15,.7)'; ctx.fillRect(0,0,this.W,this.H);
       ctx.fillStyle = '#00ff88'; ctx.font = "bold 24px 'Share Tech Mono'"; ctx.textAlign = 'center';
       ctx.fillText('PAUSADO', this.W/2, this.H/2);
       ctx.font = "14px 'Share Tech Mono'"; ctx.fillStyle = '#6a8aa0';
-      ctx.fillText('pressione P para continuar', this.W/2, this.H/2+32); ctx.textAlign = 'left';
+      ctx.fillText('toque em 🚀 para continuar', this.W/2, this.H/2+32); ctx.textAlign = 'left';
+    }
+
+    // Tela de abertura
+    if (this.intro) {
+      ctx.fillStyle = 'rgba(6,10,15,0.92)';
+      ctx.fillRect(0, 0, this.W, this.H);
+
+      // Linha de comentário verde
+      ctx.font = "14px 'Share Tech Mono'";
+      ctx.fillStyle = '#3a5570';
+      ctx.textAlign = 'center';
+      ctx.fillText('// além de resolver problemas, também os crio', this.W/2, this.H/2 - 48);
+
+      // Texto principal
+      ctx.font = "bold 15px 'Share Tech Mono'";
+      ctx.fillStyle = '#c8d8e8';
+      ctx.fillText('Desenvolver é construir algo do zero —', this.W/2, this.H/2 - 14);
+      ctx.fillText('esse jogo é prova disso.', this.W/2, this.H/2 + 10);
+
+      // Botão piscar
+      if (Math.floor(Date.now() / 500) % 2 === 0) {
+        ctx.font = "13px 'Share Tech Mono'";
+        ctx.fillStyle = '#00ff88';
+        ctx.fillText('[ pressione ESPAÇO para começar ]', this.W/2, this.H/2 + 52);
+      }
+
+      ctx.textAlign = 'left';
     }
   }
 }

@@ -29,7 +29,7 @@
       <li><a href="#habilidades">skills</a></li>
       <li><a href="#contato">contato</a></li>
     </ul>
-    <button class="nav-game-btn" id="openGameBtn">🚀 jogar</button>
+    <button class="nav-game-btn" id="openGameBtn">🚀 quer jogar um pouco?</button>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -40,16 +40,22 @@
 <div id="game-overlay">
   <button id="close-game-btn">[ ESC ] fechar</button>
   <div class="game-header">
-    <span>🚀 OWL SPACE DEFENDER</span>
+    <span>BUG DESTROYER</span>
     <span>score: <span class="game-score-lbl" id="score-display">0</span></span>
     <span>vidas: <span class="game-score-lbl" id="lives-display">3</span></span>
     <span>fase: <span class="game-score-lbl" id="wave-display">1</span></span>
+    <span class="game-score-lbl">A criatividade é a inteligência se divertindo.</span>
   </div>
   <canvas id="game-canvas" width="600" height="440"></canvas>
   <div class="game-controls">
     <span>← → mover</span>
     <span>ESPAÇO atirar</span>
     <span>P pausar</span>
+  </div>
+  <div class="touch-controls" id="touch-controls">
+    <button class="touch-btn" id="btn-left">◀</button>
+    <button class="touch-btn touch-btn-fire" id="btn-fire">shoot 💥</button>
+    <button class="touch-btn" id="btn-right">▶</button><br>
   </div>
   <div class="game-over-msg" id="game-msg"></div>
 </div>
@@ -69,11 +75,6 @@
           <a href="#contato" class="btn btn-outline"><i class="fas fa-paper-plane"></i> contato</a>
           <a href="https://github.com/owlboy13" target="_blank" class="btn btn-ghost"><i class="fab fa-github"></i> github</a>
         </div>
-        <!-- <div class="hero-stats">
-          <div class="stat-box"><div class="stat-num">5+</div><div class="stat-lbl">projetos</div></div>
-          <div class="stat-box"><div class="stat-num">3+</div><div class="stat-lbl">anos dev</div></div>
-          <div class="stat-box"><div class="stat-num">95%</div><div class="stat-lbl">Python</div></div>
-        </div> -->
       </div>
       <div class="hero-right">
         <div class="terminal">

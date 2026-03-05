@@ -288,11 +288,14 @@ body::after {
   margin-bottom:16px;display:flex;gap:32px;align-items:center;
 }
 .game-score-lbl{color:var(--green)}
-#game-canvas{
-  border:1px solid var(--border2);
-  box-shadow:0 0 40px rgba(0,255,136,0.15),0 0 80px rgba(0,0,0,0.8);
-  display:block;
+#game-canvas {
+  border: 1px solid var(--border2);
+  box-shadow: 0 0 40px rgba(0,255,136,0.15), 0 0 80px rgba(0,0,0,0.8);
+  display: block;
+  max-width: calc(100vw - 32px);
+  touch-action: none;
 }
+
 .game-controls{
   font-family:var(--mono);font-size:.72rem;color:var(--text3);
   margin-top:12px;display:flex;gap:24px;
@@ -304,6 +307,43 @@ body::after {
   background:transparent;border:1px solid var(--border);
   color:var(--text2);padding:6px 14px;border-radius:var(--r);cursor:pointer;
   transition:.2s;letter-spacing:.05em;
+}
+
+.touch-controls {
+  display: none;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+}
+.touch-btn {
+  background: rgba(0,255,136,0.08);
+  border: 1px solid var(--green);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 1.2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.touch-btn:active,
+.touch-btn.pressed {
+  background: rgba(0,255,136,0.22);
+  box-shadow: 0 0 12px rgba(0,255,136,0.3);
+}
+.touch-btn-fire {
+  border-color: var(--green);
+  width: 72px;
+  height: 72px;
+  font-size: 1.4rem;
 }
 #close-game-btn:hover{border-color:var(--red);color:var(--red)}
 .game-over-msg {
@@ -379,8 +419,14 @@ body::after {
   .nav-links.open{display:flex}
   .nav-links a{border-radius:0;border:none;border-bottom:1px solid var(--border);padding:12px 24px}
   .hamburger{display:flex}
-  .nav-game-btn{display:none}
+  .nav-game-btn{display:flex}
   #game-canvas{max-width:calc(100vw - 40px)}
+  @media (max-width: 700px) {
+    .touch-controls { display: flex; }
+    .game-controls  { display: none; }
+    #game-overlay   { padding: 12px 0; }
+     .game-header   { font-size: .7rem; gap: 16px; flex-wrap: wrap; justify-content: center; }
+}
 }
 @media(max-width:600px){
   .skills-grid{grid-template-columns:1fr}
