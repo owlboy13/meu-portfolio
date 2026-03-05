@@ -1,570 +1,385 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anderson Luiz | Desenvolvimento & Automação</title>
-    <link rel="icon" type="image/png" href="assets/icons/favicon-32x32.png">
-    
-    <!-- Meta tags para SEO -->
-    <meta name="description" content="Portfólio de Anderson Luiz - Desenvolvedor Python especializado em Automação RPA, Sistemas Web e Aplicações com IA">
-    <meta name="keywords" content="Python, Django, Automação RPA, Selenium, Streamlit, Desenvolvedor Backend, Web Scraping">
-    
-    <!-- Font Awesome para ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anderson Luiz | Dev & Automação</title>
+<meta name="description" content="Portfólio de Anderson Luiz — Desenvolvedor Python especializado em Automação RPA, Sistemas Web e IA">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="dark-theme">
-    <!-- Navegação -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#inicio" class="nav-logo">
-                <span class="owl-nav"></span> AndersonLuiz.dev
-            </a>
-            <ul class="nav-menu">
-                <li><a href="#inicio">Início</a></li>
-                <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#projetos">Projetos</a></li>
-                <li><a href="#habilidades">Habilidades</a></li>
-                <li><a href="#contato">Contato</a></li>
-                <!-- <li>
-                    <button id="theme-toggle" class="theme-btn" aria-label="Alternar tema">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                </li> Alterar para tema claro/escuro-->
-            </ul>
-            <button class="hamburger" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
+<body>
+<!-- NAV -->
+<nav class="nav" id="navbar">
+  <div class="nav-inner">
+    <a href="#inicio" class="nav-logo">
+      <span class="prompt">~$</span> andersonluiz.dev<span class="cursor"></span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#inicio">início</a></li>
+      <li><a href="#sobre">sobre</a></li>
+      <li><a href="#projetos">projetos</a></li>
+      <li><a href="#habilidades">skills</a></li>
+      <li><a href="#contato">contato</a></li>
+    </ul>
+    <button class="nav-game-btn" id="openGameBtn">🚀 jogar</button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- GAME OVERLAY -->
+<div id="game-overlay">
+  <button id="close-game-btn">[ ESC ] fechar</button>
+  <div class="game-header">
+    <span>🚀 OWL SPACE DEFENDER</span>
+    <span>score: <span class="game-score-lbl" id="score-display">0</span></span>
+    <span>vidas: <span class="game-score-lbl" id="lives-display">3</span></span>
+    <span>fase: <span class="game-score-lbl" id="wave-display">1</span></span>
+  </div>
+  <canvas id="game-canvas" width="600" height="440"></canvas>
+  <div class="game-controls">
+    <span>← → mover</span>
+    <span>ESPAÇO atirar</span>
+    <span>P pausar</span>
+  </div>
+  <div class="game-over-msg" id="game-msg"></div>
+</div>
+
+<!-- HERO -->
+<section id="inicio" class="hero">
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="hero-label">disponível para projetos</div>
+        <h1 class="hero-name">Anderson<br><span class="accent">Luiz</span></h1>
+        <p class="hero-role" id="typed-text"><span class="typed-cursor">|</span></p>
+        <p class="hero-desc">Transformo processos complexos em código eficiente. Especializado em Python, Automação RPA e sistemas com IA.</p>
+        <div class="hero-actions">
+          <a href="#projetos" class="btn btn-primary"><i class="fas fa-code"></i> projetos</a>
+          <a href="#contato" class="btn btn-outline"><i class="fas fa-paper-plane"></i> contato</a>
+          <a href="https://github.com/owlboy13" target="_blank" class="btn btn-ghost"><i class="fab fa-github"></i> github</a>
         </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="inicio" class="hero">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1 class="hero-title">
-                    <span class="gradient-text">Anderson Luiz</span>
-                    <span class="owl-hero" title="A coruja vê na escuridão o que outros não veem na luz.">🦉</span>
-                </h1>
-                <h2 class="hero-subtitle">Desenvolvimento & Automações</h2>
-                <p class="hero-desc">
-                    Transformo processos complexos em soluções eficientes através de código. 
-                    Especializado em <strong>Python, Automação RPA</strong> e desenvolvimento de 
-                    <strong>sistemas web inteligentes</strong>.
-                </p>
-                <div class="hero-actions">
-                    <a href="#projetos" class="btn btn-primary">
-                        <i class="fas fa-code"></i> Ver Projetos
-                    </a>
-                    <a href="#contato" class="btn btn-secondary">
-                        <i class="fas fa-paper-plane"></i> Contato
-                    </a>
-                    <a href="https://github.com/owlboy13" target="_blank" class="btn btn-ghost">
-                        <i class="fab fa-github"></i> GitHub
-                    </a>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="code-snippet">
-                    <pre><code class="language-python">
-    # Automatizando processos
-    def solve_problem(process):
-        """Transforma tarefas manuais em automações"""
-        bot = RPA_Engine()
-        solution = bot.analyze(process)
-        return solution.efficient()
-                    </code></pre>
-                </div>
-            </div>
+        <!-- <div class="hero-stats">
+          <div class="stat-box"><div class="stat-num">5+</div><div class="stat-lbl">projetos</div></div>
+          <div class="stat-box"><div class="stat-num">3+</div><div class="stat-lbl">anos dev</div></div>
+          <div class="stat-box"><div class="stat-num">95%</div><div class="stat-lbl">Python</div></div>
+        </div> -->
+      </div>
+      <div class="hero-right">
+        <div class="terminal">
+          <div class="terminal-bar">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="terminal-title">bot/services.py</span>
+          </div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-ln">1</span><span class="t-comment"># Automatizando Processos</span></div>
+            <div class="t-line"><span class="t-ln">2</span><span></span></div>
+            <div class="t-line"><span class="t-ln">3</span><span><span class="t-kw">class</span> <span class="t-fn">BotSolvesProblems</span>:</span></div>
+            <div class="t-line"><span class="t-ln">4</span><span>&nbsp;&nbsp;<span class="t-kw">def</span> <span class="t-fn">__init__</span>(self, process):</span></div>
+            <div class="t-line"><span class="t-ln">5</span><span>&nbsp;&nbsp;&nbsp;&nbsp;self.process = <span class="t-fn">process</span></span></div>
+            <div class="t-line"><span class="t-ln">6</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+            <div class="t-line"><span class="t-ln">7</span><span>&nbsp;&nbsp;<span class="t-kw">def</span> <span class="t-fn">execute_bot</span>(self, bot):</span></div>
+            <div class="t-line"><span class="t-ln">8</span><span>&nbsp;&nbsp;&nbsp;&nbsp;bot = RPA.engine(self.process)</span></div>
+            <div class="t-line"><span class="t-ln">9</span><span>&nbsp;&nbsp;&nbsp;&nbsp;bot.Analize_process()</span></div>
+            <div class="t-line"><span class="t-ln">10</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-kw">return</span> bot<span class="t-fn"></span></div>
+            <div class="t-line"><span class="t-ln">13</span><span></span></div>
+            <div class="t-line"><span class="t-ln">14</span><span><span class="t-comment"># 🦉 construindo do zero, sozinho</span></span></div>
+          </div>
         </div>
-        <div class="scroll-hint">
-            <span>Role para explorar</span>
-            <i class="fas fa-chevron-down"></i>
-        </div>
-    </section>
-
-    <!-- Sobre -->
-    <section id="sobre" class="section">
-        <div class="container">
-            <h2 class="section-title">
-                <i class="fas fa-user"></i> Sobre
-            </h2>
-            <div class="about-grid">
-                <div class="about-card">
-                    <div class="about-icon">
-                        <i class="fas fa-moon"></i>
-                    </div>
-                    <h3>Desenvolvedor</h3>
-                    <p>Trabalho com foco máximo e concentração. 
-                    Este é meu modo de operar.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <h3>Foco em Eficiência</h3>
-                    <p>Minha especialidade é identificar processos repetitivos e transformá-los 
-                    em automações robustas que economizam tempo e reduzem erros.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon">
-                        <i class="fas fa-puzzle-piece"></i>
-                    </div>
-                    <h3>Soluções Completas</h3>
-                    <p>Não me limito ao backend. Desenvolvo desde a interface até a implantação, 
-                    garantindo que todas as peças funcionem em harmonia.</p>
-                </div>
-            </div>
-            
-            <div class="bio">
-                <h3>Minha Jornada</h3>
-                <p>
-                    Com background em análise de processos, migrei para o desenvolvimento com o objetivo 
-                    claro de <strong>automatizar o que é repetitivo</strong> e <strong>construir o que é necessário</strong>. 
-                    Atuo como desenvolvedor Full-Stack com forte ênfase em backend, criando sistemas web, 
-                    APIs, dashboards data-driven e soluções de automação (RPA) com Python.
-                </p>
-                <p>
-                    Meus projetos vão desde <strong>web scraping inteligente</strong> até sistemas completos 
-                    com integração de IA, sempre com atenção aos detalhes e à experiência do usuário final.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projetos em Destaque -->
-    <section id="projetos" class="section projects-section">
-        <div class="container">
-            <h2 class="section-title">
-                <i class="fas fa-code-branch"></i> Projetos em Destaque
-            </h2>
-            <p class="section-subtitle">Soluções reais para problemas reais</p>
-
-            <!-- PROJETO 1: Envio de E-mails Automatizados -->
-            <article class="project-card featured">
-                <div class="project-badge">
-                    <span class="badge">RPA</span>
-                    <span class="badge badge-green">Automação</span>
-                    <span class="badge badge-blue">Marketing</span>
-                </div>
-                <div class="project-content">
-                    <div class="project-info">
-                        <h3>Envio Automatizado de E-mails</h3>
-                        <p class="project-problem">
-                            <strong>Problema:</strong> Sistema automatizado para envio em massa de emails personalizados através do Microsoft Outlook, 
-                            com controles de rate limiting e proteção anti-spam.
-                        </p>
-                        <p class="project-solution">
-                            <strong>Solução:</strong> O Email Automatic é uma ferramenta Python desenvolvida para automatizar campanhas de email marketing e 
-                            comunicações em massa de forma profissional e segura. O sistema utiliza integração nativa com o 
-                            Microsoft Outlook para enviar emails HTML personalizados a partir de uma base de dados em Excel.
-                        </p>
-                        <div class="project-stack">
-                            <span class="stack-tag"><i class="fab fa-python"></i> Python</span>
-                            <span class="stack-tag"><i class="fas fa-database"></i> Pandas</span>
-                            <span class="stack-tag"><i class="fas fa-microsoft"></i> PyWin32</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/owlboy13/envio-emails-automatizados" class="btn btn-primary" target="_blank">
-                                <i class="fas fa-external-link-alt"></i> Ver Código
-                            </a>
-                        </div>
-                    </div>
-                    <div class="project-visual">
-                        <div class="project-image-placeholder" style="background: linear-gradient(135deg, #1a2b3c, #2d4a6a);">
-                        </div>
-                    </div>
-                </div>
-            </article>
-            
-            <!-- PROJETO 2: NutroFit -->
-            <article class="project-card featured">
-                <div class="project-badge">
-                    <span class="badge">Em Andamento</span>
-                    <span class="badge badge-green">Full-Stack</span>
-                    <span class="badge badge-blue">IA</span>
-                </div>
-                <div class="project-content">
-                    <div class="project-info">
-                        <h3>NutroFit - Sistema Nutricional com IA</h3>
-                        <p class="project-problem">
-                            <strong>Problema:</strong> Nutrólogos precisam de uma forma eficiente de criar e 
-                            gerenciar planos alimentares personalizados para seus pacientes, com acompanhamento 
-                            automatizado via WhatsApp.
-                        </p>
-                        <p class="project-solution">
-                            <strong>Solução:</strong> Plataforma B2B completa que permite aos médicos cadastrar 
-                            pacientes, gerar dietas personalizadas com IA e automatizar o acompanhamento via 
-                            integração com WhatsApp.
-                        </p>
-                        <div class="project-stack">
-                            <span class="stack-tag"><i class="fab fa-node-js"></i> Node.js</span>
-                            <span class="stack-tag"><i class="fab fa-python"></i> Django</span>
-                            <span class="stack-tag"><i class="fas fa-brain"></i> Claude/LangChain</span>
-                            <span class="stack-tag"><i class="fab fa-whatsapp"></i> Twilio API</span>
-                            <span class="stack-tag"><i class="fas fa-cloud"></i> Vercel</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://nutrofit-lading.vercel.app" class="btn btn-primary" target="_blank">
-                                <i class="fas fa-external-link-alt"></i> Landing Page
-                            </a>
-                        </div>
-                    </div>
-                    <div class="project-visual">
-                        <div class="project-image-placeholder" style="background: linear-gradient(135deg, #1a2b3c, #2d4a6a);">
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- PROJETO 3: Dashboard Educacional -->
-            <article class="project-card">
-                <div class="project-badge">
-                    <span class="badge badge-green">Data Science</span>
-                    <span class="badge">Streamlit</span>
-                </div>
-                <div class="project-content">
-                    <div class="project-info">
-                        <h3>Dashboard de Análise Educacional</h3>
-                        <p class="project-problem">
-                            <strong>Problema:</strong> Escolas precisam analisar o desempenho dos alunos 
-                            por habilidade da BNCC de forma visual e acessível para tomada de decisão pedagógica.
-                        </p>
-                        <p class="project-solution">
-                            <strong>Solução:</strong> Aplicativo web interativo que processa avaliações somativas, 
-                            gera visualizações por disciplina e habilidade, e permite filtrar por turma, aluno 
-                            ou período.
-                        </p>
-                        <div class="project-stack">
-                            <span class="stack-tag"><i class="fab fa-python"></i> Python</span>
-                            <span class="stack-tag"><i class="fas fa-chart-line"></i> Streamlit</span>
-                            <span class="stack-tag"><i class="fas fa-chart-bar"></i> Plotly</span>
-                            <span class="stack-tag"><i class="fas fa-database"></i> Pandas</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://dash-geral-bernardino.streamlit.app" class="btn btn-primary" target="_blank">
-                                <i class="fas fa-external-link-alt"></i> Acessar Dashboard
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- PROJETO 4: Automação RPA -->
-            <article class="project-card">
-                <div class="project-badge">
-                    <span class="badge badge-red">RPA</span>
-                    <span class="badge">Automação</span>
-                </div>
-                <div class="project-content">
-                    <div class="project-info">
-                        <h3>Automação de Web Scraping - Sistema de Entregas</h3>
-                        <p class="project-problem">
-                            <strong>Problema:</strong> Processo manual de coleta e consolidação de dados de 
-                            entregas do iFood consumia 4+ horas semanais e era propenso a erros de digitação.
-                        </p>
-                        <p class="project-solution">
-                            <strong>Solução:</strong> Robô em Python que automatiza login, navegação, extração 
-                            e consolidação de dados em CSV pronto para análise, reduzindo o tempo para 15 minutos.
-                        </p>
-                        <div class="project-stack">
-                            <span class="stack-tag"><i class="fab fa-python"></i> Python</span>
-                            <span class="stack-tag"><i class="fas fa-robot"></i> Selenium</span>
-                            <span class="stack-tag"><i class="fas fa-table"></i> Pandas</span>
-                        </div>
-                        <div class="project-results">
-                            <div class="result-item">
-                                <i class="fas fa-clock"></i>
-                                <span>Redução de 95% no tempo</span>
-                            </div>
-                            <div class="result-item">
-                                <i class="fas fa-bug"></i>
-                                <span>Eliminação de erros manuais</span>
-                            </div>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/owlboy13/web_scraping_entrego" class="btn btn-primary" target="_blank">
-                                <i class="fab fa-github"></i> Ver Código
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- PROJETO 5: Validador NFS-e -->
-            <article class="project-card">
-                <div class="project-content">
-                    <div class="project-info">
-                        <h3>Validador de Notas Fiscais de Serviço (NFS-e)</h3>
-                        <p class="project-problem">
-                            <strong>Problema:</strong> Validação manual de NFS-e contra regras municipais 
-                            específicas é tediosa e crítica para conformidade fiscal.
-                        </p>
-                        <p class="project-solution">
-                            <strong>Solução:</strong> Sistema em Python que valida automaticamente notas fiscais 
-                            com base em prestador, tomador, descrição, valor e código de tributação.
-                        </p>
-                        <div class="project-stack">
-                            <span class="stack-tag"><i class="fab fa-python"></i> Python</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/owlboy13/Validate_NFSe.py" class="btn btn-primary" target="_blank">
-                                <i class="fab fa-github"></i> Ver Código
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <div class="projects-cta">
-                <p>Veja mais projetos no meu <a href="https://github.com/owlboy13" target="_blank">GitHub</a></p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Habilidades -->
-    <section id="habilidades" class="section skills-section">
-        <div class="container">
-            <h2 class="section-title">
-                <i class="fas fa-tools"></i> Habilidades Técnicas
-            </h2>
-            
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <div class="category-header">
-                        <i class="fab fa-python category-icon"></i>
-                        <h3>Backend & Automação</h3>
-                    </div>
-                    <div class="skills-list">
-                        <div class="skill-item">
-                            <span class="skill-name">Python</span>
-                            <div class="skill-bar">
-                                <div class="skill-level" style="width: 95%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-item">
-                            <span class="skill-name">Django</span>
-                            <div class="skill-bar">
-                                <div class="skill-level" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-item">
-                            <span class="skill-name">Flask</span>
-                            <div class="skill-bar">
-                                <div class="skill-level" style="width: 80%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-item">
-                            <span class="skill-name">Selenium</span>
-                            <div class="skill-bar">
-                                <div class="skill-level" style="width: 90%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-item">
-                            <span class="skill-name">Web Scraping</span>
-                            <div class="skill-bar">
-                                <div class="skill-level" style="width: 92%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="skill-category">
-                    <div class="category-header">
-                        <i class="fas fa-code category-icon"></i>
-                        <h3>Frontend & Web</h3>
-                    </div>
-                    <div class="skills-list">
-                        <div class="skill-item">
-                            <span class="skill-name">HTML/CSS</span>
-                            <div class="skill-bar">
-                                <div class="skill-level" style="width: 88%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-item">
-                            <span class="skill-name">JavaScript</span>
-                            <div class="skill-bar">
-                                <div class="skill-level" style="width: 82%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-item">
-                            <span class="skill-name">Node.js</span>
-                            <div class="skill-bar">
-                                <div class="skill-level" style="width: 75%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-item">
-                            <span class="skill-name">Streamlit</span>
-                            <div class="skill-bar">
-                                <div class="skill-level" style="width: 85%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="skill-category">
-                    <div class="category-header">
-                        <i class="fas fa-cogs category-icon"></i>
-                        <h3>Ferramentas & Conceitos</h3>
-                    </div>
-                    <div class="skills-tags">
-                        <span class="skill-tag"><i class="fab fa-git-alt"></i> Git/GitHub</span>
-                        <span class="skill-tag"><i class="fas fa-database"></i> MySQL</span>
-                        <span class="skill-tag"><i class="fas fa-brain"></i> IA/LLMs</span>
-                        <span class="skill-tag"><i class="fas fa-chart-line"></i> Análise de Dados</span>
-                        <span class="skill-tag"><i class="fas fa-project-diagram"></i> APIs REST</span>
-                        <span class="skill-tag"><i class="fas fa-cloud"></i> Vercel/Render</span>
-                        <span class="skill-tag"><i class="fas fa-sync-alt"></i> Integrações</span>
-                        <span class="skill-tag"><i class="fas fa-tasks"></i> Scrum/Ágil</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contato -->
-    <section id="contato" class="section contact-section">
-        <div class="container">
-            <h2 class="section-title">
-                <i class="fas fa-paper-plane"></i> Contato
-            </h2>
-            <p class="section-subtitle">Vamos transformar sua ideia em solução?</p>
-            
-            <div class="contact-grid">
-                <div class="contact-info">
-                    <h3>Entre em Contato</h3>
-                    <p>Disponível para projetos freelance, oportunidades colaborativas ou posições em tempo integral.</p>
-                    
-                    <div class="contact-details">
-                        <a href="https://wa.me/5583999208007" class="contact-item" target="_blank">
-                            <div class="contact-icon">
-                                <i class="fab fa-whatsapp"></i>
-                            </div>
-                            <div class="contact-text">
-                                <span class="contact-label">WhatsApp</span>
-                                <span class="contact-value">(83) 99920-8007</span>
-                            </div>
-                        </a>
-                        
-                        <a href="mailto:andersonluiz.dev@gmail.com" class="contact-item">
-                            <div class="contact-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div class="contact-text">
-                                <span class="contact-label">E-mail</span>
-                                <span class="contact-value">andersonluiz.dev@gmail.com</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div>
-                    <h3>Minhas Redes</h3>
-                    <br><p>Confere também meu LinkedIn e o meu Repositório GitHub</p><br>
-                    <a href="https://www.linkedin.com/in/andersonluiz-dev/" class="contact-item" target="_blank">
-                        <div class="contact-icon">
-                            <i class="fab fa-linkedin"></i>
-                        </div>
-                        <div class="contact-text">
-                            <span class="contact-label">LinkedIn</span>
-                            <span class="contact-value">/in/andersonluiz-dev</span>
-                        </div>
-                    </a>
-                    
-                    <a href="https://github.com/owlboy13" class="contact-item" target="_blank">
-                        <div class="contact-icon">
-                            <i class="fab fa-github"></i>
-                        </div>
-                        <div class="contact-text">
-                            <span class="contact-label">GitHub</span>
-                            <span class="contact-value">github.com/owlboy13</span>
-                        </div>
-                    </a>
-                </div>
-                <!-- DIV ABAIXO REFERE-SE A CAMPO DE TEXTO PARA ENVIO DE MENSAGEM -->
-                <!-- <div class="contact-form">
-                    <form id="contactForm" netlify>
-                        <div class="form-group">
-                            <label for="name">Nome</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">E-mail</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="subject">Assunto</label>
-                            <select id="subject" name="subject">
-                                <option value="">Selecione um assunto</option>
-                                <option value="freelance">Projeto Freelance</option>
-                                <option value="job">Oportunidade de Emprego</option>
-                                <option value="collab">Colaboração</option>
-                                <option value="other">Outro</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Mensagem</label>
-                            <textarea id="message" name="message" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> Enviar Mensagem
-                        </button>
-                    </form>
-                </div> -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <span class="owl-footer" title="Clique na coruja!">🦉</span>
-                    <h3>AndersonLuiz.dev</h3>
-                    <p>Desenvolvimento e Automação</p>
-                </div>
-                
-                <div class="footer-links">
-                    <a href="#inicio">Início</a>
-                    <a href="#projetos">Projetos</a>
-                    <a href="#habilidades">Habilidades</a>
-                    <a href="#contato">Contato</a>
-                </div>
-                
-                <div class="footer-social">
-                    <a href="https://github.com/owlboy13" target="_blank" aria-label="GitHub">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/in/andersonluiz-dev/" target="_blank" aria-label="LinkedIn">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    <a href="mailto:andersonluiz.dev@gmail.com" aria-label="E-mail">
-                        <i class="fas fa-envelope"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>© 2026 Anderson Luiz. Codificado durante a madrugada. <span id="owl-secret" style="cursor: pointer;">🦉</span></p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Modal para detalhes do projeto -->
-    <div id="project-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div id="modal-body"></div>
-        </div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <script src="script.js"></script>
+<!-- SOBRE -->
+<section id="sobre" class="section fade-in">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">sobre</div>
+      <h2 class="section-title">Quem sou eu</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>Com background em análise de processos, migrei para o desenvolvimento com um objetivo claro: <strong>automatizar o que é repetitivo</strong> e <strong>construir o que é necessário</strong>.</p>
+        <p>Atuo como dev Full-Stack com forte ênfase em backend — criando sistemas web, APIs, dashboards data-driven e soluções de automação RPA com Python.</p>
+        <p>Meus projetos vão de <strong>web scraping inteligente</strong> até sistemas completos com IA integrada, sempre com atenção aos detalhes e à experiência final.</p>
+        <p>Atualmente construindo o <strong>NutroFit</strong> — uma plataforma SaaS para nutricionistas com assistente IA no WhatsApp. Desenvolvendo solo, do zero.</p>
+        <br>
+        <a href="https://github.com/owlboy13" target="_blank" class="btn btn-outline" style="font-size:.75rem;padding:8px 16px"><i class="fab fa-github"></i> ver github</a>
+      </div>
+      <div class="feature-list">
+        <div class="feature-item">
+          <div><h4>Foco em Automação</h4><p>Identifico processos repetitivos e os transformo em automações robustas que economizam horas e eliminam erros.</p></div>
+        </div>
+        <div class="feature-item">
+          <div><h4>IA Aplicada</h4><p>Integro LLMs como Claude em sistemas reais, criando soluções inteligentes com valor concreto para o usuário final.</p></div>
+        </div>
+        <div class="feature-item">
+          <div><h4>Soluções Completas</h4><p>Do backend ao deploy, garanto que todas as peças funcionem em harmonia — sem depender de terceiros para avançar.</p></div>
+        </div>
+        <div class="feature-item">
+          <div><h4>Modo Noturno</h4><p>Sessões de 5–8h de foco intenso. A coruja vê na escuridão o que outros não veem na luz.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJETOS -->
+<section id="projetos" class="section fade-in">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">projetos</div>
+      <h2 class="section-title">O que construo</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="projects-list">
+
+      <!-- NutroFit -->
+      <article class="project-card featured">
+        <div class="project-badges">
+          <span class="badge badge-amber">Em desenvolvimento</span>
+          <span class="badge badge-green">Full-Stack</span>
+          <span class="badge badge-blue">IA</span>
+          <span class="badge badge-blue">SaaS</span>
+        </div>
+        <h3 class="project-title">NutroFit — Plataforma Nutricional com IA</h3>
+        <p class="project-problem"><strong>Problema:</strong> Nutricionistas gastam horas em tarefas repetitivas de acompanhamento e comunicação com pacientes.</p>
+        <p class="project-solution"><strong>Solução:</strong> Plataforma B2B com dashboard médico, geração de dietas por IA e assistente automatizado via WhatsApp com Claude Sonnet.</p>
+        <div class="project-stack">
+          <span class="stack-tag"><i class="fab fa-python"></i> Django</span>
+          <span class="stack-tag"><i class="fas fa-brain"></i> Claude AI</span>
+          <span class="stack-tag"><i class="fab fa-whatsapp"></i> Twilio</span>
+          <span class="stack-tag"><i class="fas fa-tasks"></i> Celery + Redis</span>
+          <span class="stack-tag"><i class="fas fa-cloud"></i> Railway</span>
+        </div>
+        <div class="project-footer">
+          <div class="project-results">
+            <span class="result-item"><i class="fas fa-check-circle"></i> WhatsApp automático</span>
+            <span class="result-item"><i class="fas fa-check-circle"></i> Monitoramento 24/7</span>
+          </div>
+          <div class="project-links">
+            <a href="https://nutrofit-lading.vercel.app" target="_blank" class="btn btn-primary" style="font-size:.72rem;padding:7px 14px"><i class="fas fa-external-link-alt"></i> landing page</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Email Automation -->
+      <article class="project-card">
+        <div class="project-badges">
+          <span class="badge badge-green">RPA</span>
+          <span class="badge badge-gray">Automação</span>
+        </div>
+        <h3 class="project-title">Envio Automatizado de E-mails</h3>
+        <p class="project-problem"><strong>Problema:</strong> Campanhas de email marketing exigiam processo manual demorado e suscetível a erros.</p>
+        <p class="project-solution"><strong>Solução:</strong> Sistema Python integrado ao Outlook que automatiza envio em massa de emails HTML personalizados com rate limiting e proteção anti-spam.</p>
+        <div class="project-stack">
+          <span class="stack-tag"><i class="fab fa-python"></i> Python</span>
+          <span class="stack-tag"><i class="fas fa-database"></i> Pandas</span>
+          <span class="stack-tag"><i class="fas fa-envelope"></i> PyWin32</span>
+        </div>
+        <div class="project-footer">
+          <div class="project-links">
+            <a href="https://github.com/owlboy13/envio-emails-automatizados" target="_blank" class="btn btn-outline" style="font-size:.72rem;padding:7px 14px"><i class="fab fa-github"></i> ver código</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Web Scraping -->
+      <article class="project-card">
+        <div class="project-badges">
+          <span class="badge badge-green">RPA</span>
+          <span class="badge badge-gray">Web Scraping</span>
+        </div>
+        <h3 class="project-title">Automação de Web Scraping — Sistema de Entregas</h3>
+        <p class="project-problem"><strong>Problema:</strong> Coleta manual de dados de entregas do iFood consumia 4+ horas semanais.</p>
+        <p class="project-solution"><strong>Solução:</strong> Robô Python que automatiza login, navegação, extração e consolidação de dados em CSV, reduzindo para 15 minutos.</p>
+        <div class="project-stack">
+          <span class="stack-tag"><i class="fab fa-python"></i> Python</span>
+          <span class="stack-tag"><i class="fas fa-robot"></i> Selenium</span>
+          <span class="stack-tag"><i class="fas fa-table"></i> Pandas</span>
+        </div>
+        <div class="project-footer">
+          <div class="project-results">
+            <span class="result-item"><i class="fas fa-bolt"></i> 95% menos tempo</span>
+            <span class="result-item"><i class="fas fa-shield-alt"></i> zero erros manuais</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/owlboy13/web_scraping_entrego" target="_blank" class="btn btn-outline" style="font-size:.72rem;padding:7px 14px"><i class="fab fa-github"></i> ver código</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Dashboard -->
+      <article class="project-card">
+        <div class="project-badges">
+          <span class="badge badge-blue">Data Science</span>
+          <span class="badge badge-gray">Streamlit</span>
+        </div>
+        <h3 class="project-title">Dashboard de Análise Educacional</h3>
+        <p class="project-problem"><strong>Problema:</strong> Escolas precisavam analisar desempenho por habilidade BNCC de forma visual para tomada de decisão.</p>
+        <p class="project-solution"><strong>Solução:</strong> App interativo que processa avaliações e gera visualizações por disciplina, habilidade, turma e período.</p>
+        <div class="project-stack">
+          <span class="stack-tag"><i class="fab fa-python"></i> Python</span>
+          <span class="stack-tag"><i class="fas fa-chart-line"></i> Streamlit</span>
+          <span class="stack-tag"><i class="fas fa-chart-bar"></i> Plotly</span>
+          <span class="stack-tag"><i class="fas fa-database"></i> Pandas</span>
+        </div>
+        <div class="project-footer">
+          <div class="project-links">
+            <a href="https://dash-geral-bernardino.streamlit.app" target="_blank" class="btn btn-outline" style="font-size:.72rem;padding:7px 14px"><i class="fas fa-external-link-alt"></i> acessar</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- NFS-e -->
+      <article class="project-card">
+        <div class="project-badges">
+          <span class="badge badge-gray">Python</span>
+          <span class="badge badge-gray">Fiscal</span>
+        </div>
+        <h3 class="project-title">Validador de Notas Fiscais (NFS-e)</h3>
+        <p class="project-problem"><strong>Problema:</strong> Validação manual de NFS-e contra regras municipais era tediosa e crítica para conformidade fiscal.</p>
+        <p class="project-solution"><strong>Solução:</strong> Sistema Python que valida automaticamente notas com base em prestador, tomador, valor e código de tributação.</p>
+        <div class="project-stack">
+          <span class="stack-tag"><i class="fab fa-python"></i> Python</span>
+        </div>
+        <div class="project-footer">
+          <div class="project-links">
+            <a href="https://github.com/owlboy13/Validate_NFSe.py" target="_blank" class="btn btn-outline" style="font-size:.72rem;padding:7px 14px"><i class="fab fa-github"></i> ver código</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+    <p style="font-family:var(--mono);font-size:.75rem;color:var(--text3);margin-top:24px;text-align:center">
+      // mais projetos em <a href="https://github.com/owlboy13" target="_blank" style="color:var(--green)">github.com/owlboy13</a>
+    </p>
+  </div>
+</section>
+
+<!-- HABILIDADES -->
+<section id="habilidades" class="section fade-in">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">habilidades</div>
+      <h2 class="section-title">Stack técnico</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="skills-grid" id="skills-grid">
+
+      <div class="skill-cat">
+        <div class="skill-cat-header">
+          <i class="fab fa-python skill-cat-icon"></i>
+          <span class="skill-cat-title">Backend & Automação</span>
+        </div>
+        <div class="skill-row"><div class="skill-info"><span class="skill-name">Python</span><span class="skill-pct">95%</span></div><div class="skill-bar"><div class="skill-fill" data-w="95"></div></div></div>
+        <div class="skill-row"><div class="skill-info"><span class="skill-name">Django</span><span class="skill-pct">85%</span></div><div class="skill-bar"><div class="skill-fill" data-w="85"></div></div></div>
+        <div class="skill-row"><div class="skill-info"><span class="skill-name">Selenium / RPA</span><span class="skill-pct">90%</span></div><div class="skill-bar"><div class="skill-fill" data-w="90"></div></div></div>
+        <div class="skill-row"><div class="skill-info"><span class="skill-name">Web Scraping</span><span class="skill-pct">92%</span></div><div class="skill-bar"><div class="skill-fill" data-w="92"></div></div></div>
+        <div class="skill-row"><div class="skill-info"><span class="skill-name">Flask</span><span class="skill-pct">80%</span></div><div class="skill-bar"><div class="skill-fill" data-w="80"></div></div></div>
+      </div>
+
+      <div class="skill-cat">
+        <div class="skill-cat-header">
+          <i class="fas fa-code skill-cat-icon"></i>
+          <span class="skill-cat-title">Frontend & Web</span>
+        </div>
+        <div class="skill-row"><div class="skill-info"><span class="skill-name">HTML/CSS</span><span class="skill-pct">88%</span></div><div class="skill-bar"><div class="skill-fill" data-w="88"></div></div></div>
+        <div class="skill-row"><div class="skill-info"><span class="skill-name">JavaScript</span><span class="skill-pct">82%</span></div><div class="skill-bar"><div class="skill-fill" data-w="82"></div></div></div>
+        <div class="skill-row"><div class="skill-info"><span class="skill-name">Streamlit</span><span class="skill-pct">85%</span></div><div class="skill-bar"><div class="skill-fill" data-w="85"></div></div></div>
+        <div class="skill-row"><div class="skill-info"><span class="skill-name">Node.js</span><span class="skill-pct">75%</span></div><div class="skill-bar"><div class="skill-fill" data-w="75"></div></div></div>
+      </div>
+
+      <div class="skill-cat">
+        <div class="skill-cat-header">
+          <i class="fas fa-cogs skill-cat-icon"></i>
+          <span class="skill-cat-title">Ferramentas & Cloud</span>
+        </div>
+        <div class="tags-grid">
+          <span class="stack-tag"><i class="fab fa-git-alt"></i> Git</span>
+          <span class="stack-tag"><i class="fas fa-database"></i> PostgreSQL</span>
+          <span class="stack-tag"><i class="fas fa-brain"></i> Claude AI</span>
+          <span class="stack-tag"><i class="fab fa-whatsapp"></i> Twilio</span>
+          <span class="stack-tag"><i class="fas fa-cloud"></i> Vercel</span>
+          <span class="stack-tag"><i class="fas fa-server"></i> Railway</span>
+          <span class="stack-tag"><i class="fas fa-tasks"></i> Celery</span>
+          <span class="stack-tag"><i class="fas fa-project-diagram"></i> APIs REST</span>
+          <span class="stack-tag"><i class="fas fa-chart-line"></i> Pandas</span>
+          <span class="stack-tag"><i class="fas fa-sync-alt"></i> Redis</span>
+          <span class="stack-tag"><i class="fas fa-tasks"></i> Scrum</span>
+          <span class="stack-tag"><i class="fab fa-docker"></i> Docker</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTATO -->
+<section id="contato" class="section fade-in">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">contato</div>
+      <h2 class="section-title">Vamos conversar</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-block">
+        <h3>// canais diretos</h3>
+        <a href="https://wa.me/5583999208007" class="contact-item" target="_blank">
+          <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+          <div><div class="contact-lbl">WhatsApp</div><div class="contact-val">(83) 99920-8007</div></div>
+        </a>
+        <a href="mailto:andersonluiz.dev@gmail.com" class="contact-item">
+          <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+          <div><div class="contact-lbl">E-mail</div><div class="contact-val">andersonluiz.dev@gmail.com</div></div>
+        </a>
+        <a href="https://www.linkedin.com/in/andersonluiz-dev/" target="_blank" class="contact-item">
+          <div class="contact-icon"><i class="fab fa-linkedin"></i></div>
+          <div><div class="contact-lbl">LinkedIn</div><div class="contact-val">/in/andersonluiz-dev</div></div>
+        </a>
+        <a href="https://github.com/owlboy13" target="_blank" class="contact-item">
+          <div class="contact-icon"><i class="fab fa-github"></i></div>
+          <div><div class="contact-lbl">GitHub</div><div class="contact-val">github.com/owlboy13</div></div>
+        </a>
+      </div>
+      <div class="contact-cta">
+        <div style="font-size:2.5rem">🦉</div>
+        <h3 style="color:#fff;font-size:1.1rem">Disponível para projetos</h3>
+        <p>Freelance, oportunidades colaborativas ou posições em tempo integral. Mande uma mensagem e respondo rápido.</p>
+        <a href="https://wa.me/5583999208007" target="_blank" class="btn btn-primary"><i class="fab fa-whatsapp"></i> falar agora</a>
+        <p style="font-family:var(--mono);font-size:.7rem;color:var(--text3);margin-top:8px">// nordeste · BR</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand"><span>🦉</span> andersonluiz.dev — codificado de madrugada</div>
+      <div class="footer-links">
+        <a href="https://github.com/owlboy13" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/andersonluiz-dev/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+        <a href="mailto:andersonluiz.dev@gmail.com" aria-label="E-mail"><i class="fas fa-envelope"></i></a>
+      </div>
+    </div>
+    <div class="footer-copy">© 2026 Anderson Luiz · <span style="color:var(--green)">[ digite OWL para um easter egg ]</span></div>
+  </div>
+</footer>
+<script src="script.js"></script>
 </body>
 </html>

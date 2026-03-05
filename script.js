@@ -1,622 +1,302 @@
-// ===== CONFIGURAÇÃO INICIAL =====
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar todos os componentes
-    initNavbar();
-    initTheme();
-    initEasterEggs();
-    initContactForm();
-    initSkillAnimations();
-    initProjectModals();
-    initScrollEffects();
-    
-    console.log('%c🦉 Portfólio AndersonLuiz.dev carregado!', 
-        'color: #2ea043; font-size: 14px; font-weight: bold;');
-    console.log('%cDica: Digite "OWL" no teclado para um easter egg secreto!', 
-        'color: #8b949e; font-size: 12px;');
+// ===== TYPED EFFECT =====
+const phrases = ['Software Developer', 'Automação & RPA ', 'Django + Python ', 'Indie SaaS Builder '];
+let pi = 0, ci = 0, deleting = false;
+const el = document.getElementById('typed-text');
+function type() {
+  const phrase = phrases[pi];
+  if (!deleting) {
+    el.innerHTML = phrase.slice(0, ci + 1) + '<span class="typed-cursor">|</span>';
+    ci++;
+    if (ci === phrase.length) { deleting = true; setTimeout(type, 1800); return; }
+  } else {
+    el.innerHTML = phrase.slice(0, ci - 1) + '<span class="typed-cursor">|</span>';
+    ci--;
+    if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; }
+  }
+  setTimeout(type, deleting ? 60 : 90);
+}
+type();
+
+// ===== NAV =====
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  hamburger.classList.remove('open'); navLinks.classList.remove('open');
+}));
+
+// Nav active + scroll shrink
+const sections = document.querySelectorAll('section[id]');
+window.addEventListener('scroll', () => {
+  const scrollY = window.pageYOffset;
+  sections.forEach(s => {
+    const top = s.offsetTop - 80, h = s.offsetHeight, id = s.id;
+    const link = navLinks.querySelector(`a[href="#${id}"]`);
+    if (link) link.classList.toggle('active', scrollY >= top && scrollY < top + h);
+  });
 });
 
-// ===== NAVBAR RESPONSIVA =====
-function initNavbar() {
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-    
-    if (hamburger && navMenu) {
-        hamburger.addEventListener('click', function() {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            
-            // Fechar menu ao clicar em um link
-            document.querySelectorAll('.nav-menu a').forEach(link => {
-                link.addEventListener('click', () => {
-                    hamburger.classList.remove('active');
-                    navMenu.classList.remove('active');
-                });
-            });
-        });
+// ===== FADE IN =====
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ===== SKILL BARS =====
+const skillObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.skill-fill').forEach(bar => {
+        bar.style.width = bar.dataset.w + '%';
+      });
+      skillObs.unobserve(e.target);
     }
-    
-    // Efeito de mudança na navbar ao scroll
-    window.addEventListener('scroll', function() {
-        const navbar = document.querySelector('.navbar');
-        if (window.scrollY > 50) {
-            navbar.style.padding = '10px 0';
-            navbar.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3)';
-        } else {
-            navbar.style.padding = '15px 0';
-            navbar.style.boxShadow = 'none';
-        }
+  });
+}, { threshold: 0.3 });
+const sg = document.getElementById('skills-grid');
+if (sg) skillObs.observe(sg);
+
+// ===== TOAST =====
+function showToast(msg) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span>${msg}</span><button class="toast-close">&times;</button>`;
+  document.body.appendChild(t);
+  t.querySelector('.toast-close').onclick = () => t.remove();
+  setTimeout(() => t.remove(), 4500);
+}
+
+// ===== EASTER EGG =====
+let owlSeq = [];
+document.addEventListener('keydown', e => {
+  owlSeq.push(e.code);
+  if (owlSeq.length > 3) owlSeq.shift();
+  if (JSON.stringify(owlSeq) === JSON.stringify(['KeyO','KeyW','KeyL'])) {
+    showToast('🦉 Modo Coruja Ativado! A sabedoria noturna guia meus commits.');
+    owlSeq = [];
+    for (let i = 0; i < 6; i++) {
+      const o = document.createElement('div');
+      o.textContent = '🦉';
+      const sx = Math.random() * window.innerWidth;
+      Object.assign(o.style, {
+        position:'fixed', left:sx+'px', bottom:'0',
+        fontSize:'1.8rem', zIndex:'9998', pointerEvents:'none',
+        transition:`transform ${3+Math.random()*2}s linear, opacity ${3+Math.random()*2}s ease`,
+        transform:'translateY(0)', opacity:'1'
+      });
+      document.body.appendChild(o);
+      requestAnimationFrame(() => {
+        o.style.transform = `translateY(-${window.innerHeight+100}px) rotate(${Math.random()*360}deg)`;
+        o.style.opacity = '0';
+      });
+      setTimeout(() => o.remove(), 5000);
+    }
+  }
+});
+
+// ===== SPACE GAME =====
+const openBtn = document.getElementById('openGameBtn');
+const closeBtn = document.getElementById('close-game-btn');
+const overlay = document.getElementById('game-overlay');
+const canvas = document.getElementById('game-canvas');
+const ctx = canvas.getContext('2d');
+
+let game = null;
+
+function startGame() {
+  overlay.classList.add('active');
+  if (game) game.destroy();
+  game = new SpaceGame();
+}
+function closeGame() {
+  overlay.classList.remove('active');
+  if (game) { game.destroy(); game = null; }
+}
+
+openBtn.addEventListener('click', startGame);
+closeBtn.addEventListener('click', closeGame);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.classList.contains('active')) closeGame(); });
+
+class SpaceGame {
+  constructor() {
+    this.W = canvas.width; this.H = canvas.height;
+    this.score = 0; this.lives = 3; this.wave = 1; this.paused = false; this.over = false;
+    this.player = { x: this.W/2, y: this.H - 50, w: 30, h: 20, speed: 5 };
+    this.bullets = []; this.enemies = []; this.particles = []; this.stars = [];
+    this.keys = {};
+    this.shootCooldown = 0;
+    this.msgEl = document.getElementById('game-msg');
+
+    // Stars
+    for (let i = 0; i < 80; i++) this.stars.push({
+      x: Math.random()*this.W, y: Math.random()*this.H,
+      r: Math.random()*1.5+.3, speed: Math.random()*.8+.2, opacity: Math.random()*.6+.2
     });
-}
 
-// ===== TOGGLE DE TEMA CLARO/ESCURO =====
-function initTheme() {
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = themeToggle?.querySelector('i');
-    
-    // Verificar tema salvo
-    const savedTheme = localStorage.getItem('portfolio-theme') || 'dark';
-    setTheme(savedTheme);
-    
-    if (themeToggle && themeIcon) {
-        themeToggle.addEventListener('click', function() {
-            const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            setTheme(newTheme);
-            localStorage.setItem('portfolio-theme', newTheme);
-        });
-    }
-    
-    function setTheme(theme) {
-        if (theme === 'light') {
-            document.body.classList.remove('dark-theme');
-            document.body.classList.add('light-theme');
-            updateThemeVariables('light');
-            if (themeIcon) themeIcon.className = 'fas fa-sun';
-        } else {
-            document.body.classList.remove('light-theme');
-            document.body.classList.add('dark-theme');
-            updateThemeVariables('dark');
-            if (themeIcon) themeIcon.className = 'fas fa-moon';
-        }
-    }
-    
-    function updateThemeVariables(theme) {
-        const root = document.documentElement;
-        
-        if (theme === 'light') {
-            root.style.setProperty('--bg-primary', '#ffffff');
-            root.style.setProperty('--bg-secondary', '#f6f8fa');
-            root.style.setProperty('--bg-card', '#ffffff');
-            root.style.setProperty('--text-primary', '#1f2328');
-            root.style.setProperty('--text-secondary', '#656d76');
-            root.style.setProperty('--border-color', '#d0d7de');
-        } else {
-            root.style.setProperty('--bg-primary', '#0d1117');
-            root.style.setProperty('--bg-secondary', '#161b22');
-            root.style.setProperty('--bg-card', '#21262d');
-            root.style.setProperty('--text-primary', '#f0f6fc');
-            root.style.setProperty('--text-secondary', '#8b949e');
-            root.style.setProperty('--border-color', '#30363d');
-        }
-    }
-}
+    this.spawnWave();
+    this.keyDown = e => { this.keys[e.code] = true; if (e.code==='KeyP') this.paused=!this.paused; e.preventDefault&&/Space|Arrow/.test(e.code)&&e.preventDefault(); };
+    this.keyUp = e => { this.keys[e.code] = false; };
+    document.addEventListener('keydown', this.keyDown);
+    document.addEventListener('keyup', this.keyUp);
+    this.raf = requestAnimationFrame(() => this.loop());
+  }
 
-// ===== EASTER EGGS DA CORUJA =====
-function initEasterEggs() {
-    // 1. Coruja no Hero (tooltip interativo)
-    const heroOwl = document.querySelector('.owl-hero');
-    if (heroOwl) {
-        heroOwl.addEventListener('mouseenter', function() {
-            this.title = 'Hoo hoo! Trabalho melhor quando o sol se põe.';
-        });
-        
-        heroOwl.addEventListener('click', function() {
-            showOwlMessage('🦉 A sabedoria noturna guia meus commits!');
-        });
+  destroy() { document.removeEventListener('keydown', this.keyDown); document.removeEventListener('keyup', this.keyUp); cancelAnimationFrame(this.raf); }
+
+  spawnWave() {
+    this.enemies = [];
+    const cols = Math.min(8, 5 + this.wave), rows = Math.min(4, 2 + Math.floor(this.wave/2));
+    const ex = (this.W - cols*52) / 2;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const tier = r < 1 ? 2 : r < 2 ? 1 : 0;
+      this.enemies.push({ x: ex + c*52, y: 40 + r*40, w: 28, h: 18, tier,
+        dir: 1, speed: .4 + this.wave*.12, dropAmount: 0, hp: tier+1 });
     }
-    
-    // 2. Coruja no Footer (clique para mensagem)
-    const footerOwl = document.getElementById('owl-secret');
-    const secretMessage = document.getElementById('secret-message');
-    
-    if (footerOwl && secretMessage) {
-        footerOwl.addEventListener('click', function() {
-            secretMessage.classList.toggle('hidden');
-            
-            if (!secretMessage.classList.contains('hidden')) {
-                // Efeito de digitação
-                typeWriterEffect(
-                    secretMessage, 
-                    '"A coruja vê na escuridão o que outros não veem na luz."', 
-                    50
-                );
-            }
-        });
+    this.enemyBullets = [];
+    this.enemyShootTimer = 0;
+  }
+
+  loop() {
+    if (!this.over && !this.paused) this.update();
+    this.draw();
+    this.raf = requestAnimationFrame(() => this.loop());
+  }
+
+  update() {
+    this.shootCooldown = Math.max(0, this.shootCooldown - 1);
+    // Player
+    const p = this.player;
+    if ((this.keys['ArrowLeft']||this.keys['KeyA']) && p.x > p.w/2) p.x -= p.speed;
+    if ((this.keys['ArrowRight']||this.keys['KeyD']) && p.x < this.W - p.w/2) p.x += p.speed;
+    if ((this.keys['Space']||this.keys['ArrowUp']) && this.shootCooldown === 0) {
+      this.bullets.push({ x: p.x, y: p.y - p.h/2, w: 3, h: 10, speed: 9 });
+      this.shootCooldown = 14;
     }
-    
-    // 3. Coruja flutuante na seção Sobre
-    const owlFloat = document.querySelector('.owl-float');
-    if (owlFloat) {
-        owlFloat.addEventListener('mouseenter', function() {
-            this.style.animation = 'float 3s ease-in-out infinite';
-            this.title = 'Observando cada detalhe do código...';
-        });
-        
-        owlFloat.addEventListener('mouseleave', function() {
-            this.style.animation = '';
-        });
+    // Player bullets
+    this.bullets = this.bullets.filter(b => b.y > -10);
+    this.bullets.forEach(b => b.y -= b.speed);
+    // Stars
+    this.stars.forEach(s => { s.y += s.speed; if (s.y > this.H) s.y = 0; });
+    // Enemies movement
+    let hitEdge = false;
+    this.enemies.forEach(e => { e.x += e.speed * e.dir; if (e.x > this.W-20 || e.x < 10) hitEdge = true; });
+    if (hitEdge) { this.enemies.forEach(e => { e.dir *= -1; e.y += 16; }); }
+    // Enemy bullets
+    this.enemyShootTimer++;
+    const interval = Math.max(30, 90 - this.wave*8);
+    if (this.enemyShootTimer >= interval && this.enemies.length) {
+      const shooter = this.enemies[Math.floor(Math.random()*this.enemies.length)];
+      this.enemyBullets.push({ x: shooter.x + shooter.w/2, y: shooter.y + shooter.h, w: 3, h: 8, speed: 3+this.wave*.3 });
+      this.enemyShootTimer = 0;
     }
-    
-    // 4. Easter Egg de teclado (digitar "OWL")
-    let owlSequence = [];
-    const owlCode = ['KeyO', 'KeyW', 'KeyL'];
-    
-    document.addEventListener('keydown', function(e) {
-        owlSequence.push(e.code);
-        
-        if (owlSequence.length > 3) {
-            owlSequence.shift();
+    this.enemyBullets = this.enemyBullets.filter(b => b.y < this.H+10);
+    this.enemyBullets.forEach(b => b.y += b.speed);
+    // Collisions: player bullets vs enemies
+    this.bullets.forEach(b => {
+      this.enemies.forEach(e => {
+        if (!e.dead && b.x > e.x && b.x < e.x+e.w && b.y > e.y && b.y < e.y+e.h) {
+          e.hp--; b.y = -999;
+          if (e.hp <= 0) { e.dead = true; this.score += (e.tier+1)*10; this.spawnParticles(e.x+e.w/2, e.y+e.h/2, e.tier===2?'#ffaa00':e.tier===1?'#00aaff':'#00ff88'); }
         }
-        
-        if (JSON.stringify(owlSequence) === JSON.stringify(owlCode)) {
-            activateOwlSecret();
-            owlSequence = [];
-        }
+      });
     });
-    
-    // 5. Easter Egg escondido no console
-    const owlArt = [
-        '         ___   ',
-        '        (o,o)  ',
-        '        {"}"}  ',
-        '        -"-"-  ',
-        '🦉 OwlOS v1.0 - Sistema de Desenvolvimento Noturno'
-    ].join('\n');
-
-    console.log('%c' + owlArt, 'color: #2ea043; font-family: monospace;');
-
-function showOwlMessage(message) {
-    // Criar notificação estilo toast
-    const toast = document.createElement('div');
-    toast.className = 'owl-toast';
-    toast.innerHTML = `
-        <span>${message}</span>
-        <button class="toast-close">&times;</button>
-    `;
-    
-    // Estilos inline para o toast
-    toast.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: var(--bg-card);
-        color: var(--text-primary);
-        padding: 15px 20px;
-        border-radius: var(--border-radius);
-        border: 1px solid var(--owl-green);
-        box-shadow: var(--shadow-lg);
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        z-index: 10000;
-        animation: slideIn 0.3s ease;
-    `;
-    
-    document.body.appendChild(toast);
-    
-    // Botão para fechar
-    toast.querySelector('.toast-close').addEventListener('click', function() {
-        toast.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
+    this.enemies = this.enemies.filter(e => !e.dead);
+    // Enemy bullets vs player
+    this.enemyBullets.forEach(b => {
+      if (b.x > p.x-p.w/2 && b.x < p.x+p.w/2 && b.y > p.y-p.h/2 && b.y < p.y+p.h/2) {
+        b.y = 9999; this.lives--;
+        this.spawnParticles(p.x, p.y, '#ff4444');
+        if (this.lives <= 0) this.gameOver();
+      }
     });
-    
-    // Auto-remover após 5 segundos
-    setTimeout(() => {
-        if (toast.parentNode) {
-            toast.style.animation = 'slideOut 0.3s ease';
-            setTimeout(() => toast.remove(), 300);
-        }
-    }, 5000);
-    
-    // Adicionar keyframes CSS dinamicamente
-    if (!document.querySelector('#toast-animations')) {
-        const style = document.createElement('style');
-        style.id = 'toast-animations';
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
-            }
-            @keyframes float {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(-10px); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-}
+    // Enemies reach bottom
+    this.enemies.forEach(e => { if (e.y + e.h > this.H - 40) { this.lives = 0; this.gameOver(); } });
+    // Particles
+    this.particles = this.particles.filter(p => p.life > 0);
+    this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.life--; p.vy += .08; });
+    // Next wave
+    if (this.enemies.length === 0) { this.wave++; this.spawnWave(); showToast(`🚀 Fase ${this.wave}! Cada vez mais difícil...`); }
+    // Update HUD
+    document.getElementById('score-display').textContent = this.score;
+    document.getElementById('lives-display').textContent = this.lives;
+    document.getElementById('wave-display').textContent = this.wave;
+  }
 
-function activateOwlSecret() {
-    // Efeito visual secreto
-    document.body.style.transition = 'background 1s';
-    document.body.style.background = 'linear-gradient(135deg, #0d1117, #0e4429, #161b22)';
-    
-    showOwlMessage('🦉 Easter egg desbloqueado! Modo Coruja Ativado!');
-    
-    // Adicionar corujas voando
-    createFlyingOwls();
-    
-    // Reverter após 5 segundos
-    setTimeout(() => {
-        document.body.style.background = '';
-        document.querySelectorAll('.flying-owl').forEach(owl => owl.remove());
-    }, 5000);
-}
-
-function createFlyingOwls() {
-    for (let i = 0; i < 5; i++) {
-        const owl = document.createElement('div');
-        owl.className = 'flying-owl';
-        owl.textContent = '🦉';
-        owl.style.cssText = `
-            position: fixed;
-            font-size: 2rem;
-            z-index: 9999;
-            pointer-events: none;
-            animation: fly${i} 5s linear forwards;
-        `;
-        
-        // Posição inicial aleatória
-        const startX = Math.random() * window.innerWidth;
-        owl.style.left = `${startX}px`;
-        owl.style.top = `${window.innerHeight}px`;
-        
-        // Keyframes dinâmicos para voo
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fly${i} {
-                0% { 
-                    transform: translate(0, 0) rotate(0deg); 
-                    opacity: 1;
-                }
-                100% { 
-                    transform: translate(${Math.random() * 200 - 100}px, -${window.innerHeight + 100}px) rotate(${Math.random() * 360}deg); 
-                    opacity: 0;
-                }
-            }
-        `;
-        
-        document.head.appendChild(style);
-        document.body.appendChild(owl);
-        
-        // Remover após animação
-        setTimeout(() => owl.remove(), 5000);
-    }
-}
-
-function typeWriterEffect(element, text, speed) {
-    let i = 0;
-    element.innerHTML = '';
-    
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        }
-    }
-    
-    type();
-}
-
-// ===== FORMULÁRIO DE CONTATO =====
-function initContactForm() {
-    const contactForm = document.getElementById('contactForm');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validação básica
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const message = document.getElementById('message').value.trim();
-            
-            if (!name || !email || !message) {
-                showFormMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
-                return;
-            }
-            
-            // Simulação de envio (substituir por integração real)
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-            submitBtn.disabled = true;
-            
-            // Simular delay de rede
-            setTimeout(() => {
-                showFormMessage('Mensagem enviada com sucesso! Entrarei em contato em breve.', 'success');
-                contactForm.reset();
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                
-                // Google Analytics event (se configurado)
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'contact_form_submit', {
-                        'event_category': 'engagement',
-                        'event_label': 'Contact Form'
-                    });
-                }
-            }, 1500);
-        });
-    }
-    
-    function showFormMessage(message, type) {
-        // Remover mensagens anteriores
-        const existingMsg = document.querySelector('.form-message');
-        if (existingMsg) existingMsg.remove();
-        
-        // Criar nova mensagem
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `form-message ${type}`;
-        msgDiv.textContent = message;
-        msgDiv.style.cssText = `
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: var(--border-radius);
-            background-color: ${type === 'success' ? 'rgba(46, 160, 67, 0.2)' : 'rgba(218, 54, 51, 0.2)'};
-            color: ${type === 'success' ? 'var(--owl-green)' : 'var(--danger)'};
-            border: 1px solid ${type === 'success' ? 'var(--owl-green)' : 'var(--danger)'};
-        `;
-        
-        contactForm.appendChild(msgDiv);
-        
-        // Auto-remover após 5 segundos
-        setTimeout(() => {
-            if (msgDiv.parentNode) {
-                msgDiv.style.opacity = '0';
-                msgDiv.style.transition = 'opacity 0.3s';
-                setTimeout(() => msgDiv.remove(), 300);
-            }
-        }, 5000);
-    }
-}
-
-// ===== ANIMAÇÃO DAS HABILIDADES =====
-function initSkillAnimations() {
-    const skillSection = document.getElementById('habilidades');
-    const skillBars = document.querySelectorAll('.skill-level');
-    
-    if (!skillSection || skillBars.length === 0) return;
-    
-    // Observer para animar ao entrar na viewport
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                skillBars.forEach(bar => {
-                    const width = bar.style.width;
-                    bar.style.width = '0';
-                    
-                    setTimeout(() => {
-                        bar.style.transition = 'width 1.5s ease-in-out';
-                        bar.style.width = width;
-                    }, 200);
-                });
-                
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.3 });
-    
-    observer.observe(skillSection);
-}
-
-// ===== MODAIS DE PROJETOS =====
-function initProjectModals() {
-    const projectButtons = document.querySelectorAll('[data-project]');
-    const modal = document.getElementById('project-modal');
-    const closeModal = document.querySelector('.close-modal');
-    
-    if (!modal || projectButtons.length === 0) return;
-    
-    // Dados dos projetos
-    const projects = {
-        nutrofit: {
-            title: "NutroFit - Sistema Nutricional com IA",
-            content: `
-                <h2>Detalhes do Projeto</h2>
-                <p><strong>Status:</strong> Em desenvolvimento (fase final)</p>
-                
-                <h3>📊 Contexto do Problema</h3>
-                <p>Nutrólogos enfrentam dificuldades para:</p>
-                <ul>
-                    <li>Criar planos alimentares personalizados de forma eficiente</li>
-                    <li>Acompanhar múltiplos pacientes simultaneamente</li>
-                    <li>Manter comunicação constante via WhatsApp</li>
-                    <li>Analisar dados de progresso dos pacientes</li>
-                </ul>
-                
-                <h3>🚀 Solução Implementada</h3>
-                <p>Sistema B2B completo com:</p>
-                <ul>
-                    <li><strong>Landing Page</strong> - Convert leads médicos</li>
-                    <li><strong>Dashboard Médico</strong> - Gerenciamento de pacientes</li>
-                    <li><strong>IA Generativa</strong> - Cria planos alimentares personalizados</li>
-                    <li><strong>Integração WhatsApp</strong> - Envio automático de lembretes e check-ins</li>
-                    <li><strong>Painel do Paciente</strong> - Acompanhamento via app web</li>
-                </ul>
-                
-                <h3>🛠 Stack Tecnológica</h3>
-                <div class="modal-stack">
-                    <span class="stack-tag"><i class="fab fa-node-js"></i> Node.js (Frontend)</span>
-                    <span class="stack-tag"><i class="fab fa-python"></i> Django (Backend API)</span>
-                    <span class="stack-tag"><i class="fas fa-brain"></i> Claude/LangChain (IA)</span>
-                    <span class="stack-tag"><i class="fab fa-whatsapp"></i> Twilio API</span>
-                    <span class="stack-tag"><i class="fas fa-database"></i> PostgreSQL</span>
-                    <span class="stack-tag"><i class="fas fa-cloud"></i> Vercel (Deploy)</span>
-                </div>
-                
-                <h3>📈 Próximos Passos</h3>
-                <ul>
-                    <li>Integração completa da API de IA (Claude)</li>
-                    <li>Sistema de pagamentos (Stripe)</li>
-                    <li>App mobile React Native</li>
-                    <li>Beta testing com 5 clínicas</li>
-                </ul>
-                
-                <div class="modal-links">
-                    <a href="https://nutrofit-lading.vercel.app" class="btn btn-primary" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Acessar Landing Page
-                    </a>
-                    <a href="mailto:andersonluiz.dev@gmail.com?subject=Interesse no NutroFit" class="btn btn-secondary">
-                        <i class="fas fa-envelope"></i> Solicitar Demonstração
-                    </a>
-                </div>
-            `
-        }
-        // Adicionar outros projetos aqui conforme necessário
-    };
-    
-    // Abrir modal
-    projectButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const projectId = this.getAttribute('data-project');
-            
-            if (projects[projectId]) {
-                document.getElementById('modal-body').innerHTML = projects[projectId].content;
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            }
-        });
+  spawnParticles(x, y, color) {
+    for (let i = 0; i < 10; i++) this.particles.push({
+      x, y, vx: (Math.random()-.5)*4, vy: (Math.random()-.5)*4,
+      life: 30+Math.random()*20, color, r: Math.random()*3+1
     });
-    
-    // Fechar modal
-    function closeModalFunc() {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
+  }
+
+  gameOver() {
+    this.over = true;
+    this.msgEl.innerHTML = `<span style="color:var(--red)">GAME OVER</span> — score: <span style="color:var(--green)">${this.score}</span> &nbsp; <button onclick="if(window._game)window._game.restart()" style="font-family:var(--mono);font-size:.75rem;background:transparent;border:1px solid var(--green);color:var(--green);padding:4px 12px;border-radius:4px;cursor:pointer;margin-left:8px" onclick="startGame()">[ reiniciar ]</button>`;
+    document.getElementById('close-game-btn').textContent = '[ ESC ] fechar';
+  }
+
+  restart() { if (game) game.destroy(); game = new SpaceGame(); }
+
+  draw() {
+    ctx.fillStyle = '#060a0f'; ctx.fillRect(0,0,this.W,this.H);
+    // Grid
+    ctx.strokeStyle = 'rgba(0,255,136,0.03)'; ctx.lineWidth = 1;
+    for (let x = 0; x < this.W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,this.H); ctx.stroke(); }
+    for (let y = 0; y < this.H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(this.W,y); ctx.stroke(); }
+    // Stars
+    this.stars.forEach(s => { ctx.fillStyle=`rgba(255,255,255,${s.opacity})`; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill(); });
+    // Ground line
+    ctx.strokeStyle = 'rgba(0,255,136,0.15)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0,this.H-30); ctx.lineTo(this.W,this.H-30); ctx.stroke();
+    // Particles
+    this.particles.forEach(p => { ctx.globalAlpha = p.life/50; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); });
+    ctx.globalAlpha = 1;
+    // Player bullets
+    ctx.fillStyle = '#00ff88'; ctx.shadowColor = '#00ff88'; ctx.shadowBlur = 8;
+    this.bullets.forEach(b => { ctx.fillRect(b.x-b.w/2, b.y, b.w, b.h); });
+    // Enemy bullets
+    ctx.fillStyle = '#ff4444'; ctx.shadowColor = '#ff4444';
+    this.enemyBullets.forEach(b => { ctx.fillRect(b.x-b.w/2, b.y, b.w, b.h); });
+    ctx.shadowBlur = 0;
+    // Enemies
+    this.enemies.forEach(e => {
+      const colors = ['#00ff88','#00aaff','#ffaa00'];
+      const glows = ['#00ff88','#00aaff','#ffaa00'];
+      ctx.fillStyle = colors[e.tier]; ctx.shadowColor = glows[e.tier]; ctx.shadowBlur = 6;
+      // Body
+      ctx.fillRect(e.x+4, e.y+4, e.w-8, e.h-6);
+      // Wings
+      ctx.fillRect(e.x, e.y+8, 6, e.h-12); ctx.fillRect(e.x+e.w-6, e.y+8, 6, e.h-12);
+      // Eyes
+      ctx.fillStyle='#000'; ctx.fillRect(e.x+7,e.y+6,3,3); ctx.fillRect(e.x+e.w-10,e.y+6,3,3);
+      ctx.shadowBlur = 0;
+    });
+    // Player ship
+    const p = this.player;
+    ctx.shadowColor = '#00ff88'; ctx.shadowBlur = 12;
+    ctx.fillStyle = '#00ff88';
+    // Body
+    ctx.beginPath(); ctx.moveTo(p.x,p.y-p.h/2); ctx.lineTo(p.x+p.w/2,p.y+p.h/2); ctx.lineTo(p.x-p.w/2,p.y+p.h/2); ctx.closePath(); ctx.fill();
+    // Wings
+    ctx.fillRect(p.x-p.w/2-8, p.y+2, 10, 6); ctx.fillRect(p.x+p.w/2-2, p.y+2, 10, 6);
+    // Engine glow
+    ctx.fillStyle = '#ffaa00'; ctx.shadowColor = '#ffaa00';
+    ctx.fillRect(p.x-4, p.y+p.h/2, 8, 4);
+    ctx.shadowBlur = 0;
+    // Paused overlay
+    if (this.paused && !this.over) {
+      ctx.fillStyle = 'rgba(6,10,15,.7)'; ctx.fillRect(0,0,this.W,this.H);
+      ctx.fillStyle = '#00ff88'; ctx.font = "bold 24px 'Share Tech Mono'"; ctx.textAlign = 'center';
+      ctx.fillText('PAUSADO', this.W/2, this.H/2);
+      ctx.font = "14px 'Share Tech Mono'"; ctx.fillStyle = '#6a8aa0';
+      ctx.fillText('pressione P para continuar', this.W/2, this.H/2+32); ctx.textAlign = 'left';
     }
-    
-    if (closeModal) {
-        closeModal.addEventListener('click', closeModalFunc);
-    }
-    
-    // Fechar ao clicar fora
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModalFunc();
-        }
-    });
-    
-    // Fechar com ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.style.display === 'flex') {
-            closeModalFunc();
-        }
-    });
+  }
 }
 
-// ===== EFEITOS DE SCROLL =====
-function initScrollEffects() {
-    // Ativar links da navbar conforme scroll
-    const sections = document.querySelectorAll('section[id]');
-    
-    function highlightNavLink() {
-        const scrollY = window.pageYOffset;
-        
-        sections.forEach(section => {
-            const sectionHeight = section.offsetHeight;
-            const sectionTop = section.offsetTop - 100;
-            const sectionId = section.getAttribute('id');
-            const navLink = document.querySelector(`.nav-menu a[href="#${sectionId}"]`);
-            
-            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight && navLink) {
-                navLink.classList.add('active');
-            } else if (navLink) {
-                navLink.classList.remove('active');
-            }
-        });
-    }
-    
-    window.addEventListener('scroll', highlightNavLink);
-    
-    // Animar elementos ao entrar na viewport
-    const animateOnScroll = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animated');
-            }
-        });
-    }, { threshold: 0.1 });
-    
-    // Observar elementos para animação
-    document.querySelectorAll('.project-card, .about-card, .skill-category').forEach(el => {
-        animateOnScroll.observe(el);
-    });
-}
-
-// ===== FUNÇÕES UTILITÁRIAS =====
-// Copiar email para clipboard
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        showOwlMessage('📋 E-mail copiado para a área de transferência!');
-    });
-}
-
-// Formatar telefone
-function formatPhoneNumber(phone) {
-    return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-}
-
-// ===== INICIALIZAÇÃO ADICIONAL =====
-// Adicionar estilos dinâmicos para animações
-if (!document.querySelector('#dynamic-styles')) {
-    const dynamicStyles = document.createElement('style');
-    dynamicStyles.id = 'dynamic-styles';
-    dynamicStyles.textContent = `
-        .animated {
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .nav-menu a.active {
-            color: var(--accent) !important;
-        }
-        
-        .nav-menu a.active::after {
-            width: 100% !important;
-        }
-        
-        .modal-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .modal-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-    `;
-    document.head.appendChild(dynamicStyles);
-}
+window._game = { restart: () => startGame() };
+document.getElementById('game-msg').innerHTML = '';
