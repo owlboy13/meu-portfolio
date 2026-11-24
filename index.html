@@ -29,37 +29,11 @@
       <li><a href="#habilidades">skills</a></li>
       <li><a href="#contato">contato</a></li>
     </ul>
-    <button class="nav-game-btn" id="openGameBtn">🚀 quer jogar um pouco?</button>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
-
-<!-- GAME OVERLAY -->
-<div id="game-overlay">
-  <button id="close-game-btn">[ ESC ] fechar</button>
-  <div class="game-header">
-    <span>BUG DESTROYER</span>
-    <span>score: <span class="game-score-lbl" id="score-display">0</span></span>
-    <span>vidas: <span class="game-score-lbl" id="lives-display">3</span></span>
-    <span>fase: <span class="game-score-lbl" id="wave-display">1</span></span>
-    <span class="game-score-lbl">A criatividade é a inteligência se divertindo.</span>
-  </div>
-  <canvas id="game-canvas" width="600" height="440"></canvas>
-  <div class="game-controls">
-    <span>← → mover</span>
-    <span>ESPAÇO atirar</span>
-    <span>P pausar</span>
-  </div>
-  <div class="touch-controls" id="touch-controls">
-    <button class="touch-btn" id="btn-left">◀</button>
-    <button class="touch-btn touch-btn-fire" id="btn-fire">shoot 💥</button>
-    <button class="touch-btn" id="btn-right">▶</button><br>
-  </div>
-  <div class="game-over-msg" id="game-msg"></div>
-</div>
-
 <!-- HERO -->
 <section id="inicio" class="hero">
   <div class="hero-glow"></div>
@@ -167,6 +141,24 @@
             <a href="" target="_blank" class="btn btn-primary" style="font-size:.72rem;padding:7px 14px"><i class="fas fa-external-link-alt"></i> Em breve</a>
           </div>
       </article>
+      <!-- App Copa Logística — Gamificação e Ranking para Campanha da Copa 2026 -->
+      <article class="project-card featured">
+        <div class="project-badges">
+          <span class="badge badge-blue">DATA ANALYTICS</span>
+        </div>
+        <h3 class="project-title">App Copa Logística — Gamificação e Ranking para Campanha da Copa 2026</h3>
+          <p class="project-problem"><strong>Problema:</strong> Falta de gerenciamento de campanha de incetivos de uma operação logística durante a Copa 2026.</p>
+          <p class="project-solution"><strong>Solução:</strong> O sistema calcula automaticamente a pontuação cruzando métricas operacionais (tempo online, aceitação e conclusão de corridas) com o calendário oficial da Copa. </p>
+        <div class="project-stack">
+          <span class="stack-tag"><i class="fab fa-python"></i> Python</span>
+          <span class="stack-tag"><i class="fas fa-chart-line"></i>Streamlit</span>
+          <span class="stack-tag"><i class="fas fa-cubes"></i> Pandas</span>
+          <span class="stack-tag"><i class="fas fa-database"></i> PyArrow / Parquet</span>
+        </div>
+          <div class="project-links">
+            <a href="https://github.com/owlboy13/app-copa-logistica" target="_blank" class="btn btn-outline" style="font-size:.72rem;padding:7px 14px"><i class="fab fa-github"></i> ver código</a>
+          </div>
+      </article>
       <!-- Dashboard para logística -->
       <article class="project-card featured">
         <div class="project-badges">
@@ -180,7 +172,7 @@
           <span class="stack-tag"><i class="fab fa-python"></i> Python</span>
           <span class="stack-tag"><i class="fas fa-chart-line"></i> Streamlit</span>
           <span class="stack-tag"><i class="fas fa-chart-bar"></i> Plotly</span>
-          <span class="stack-tag"><i class="fas fa-database"></i> Pandas</span>
+          <span class="stack-tag"><i class="fas fa-cubes"></i> Pandas</span>
         </div>
             <div class="project-links">
               <a href="https://github.com/owlboy13/dashboard-logistica" target="_blank" class="btn btn-outline" style="font-size:.72rem;padding:7px 14px"><i class="fab fa-github"></i> ver código</a>
@@ -274,7 +266,7 @@
           <span class="stack-tag"><i class="fab fa-python"></i> Python</span>
           <span class="stack-tag"><i class="fas fa-chart-line"></i> Streamlit</span>
           <span class="stack-tag"><i class="fas fa-chart-bar"></i> Plotly</span>
-          <span class="stack-tag"><i class="fas fa-database"></i> Pandas</span>
+          <span class="stack-tag"><i class="fas fa-cubes"></i> Pandas</span>
         </div>
         <div class="project-footer">
           <div class="project-links">
